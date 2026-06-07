@@ -1,0 +1,24 @@
+import { create } from 'zustand';
+import { HeroClass } from '@/types/hero';
+
+interface OnboardingState {
+  step: number;
+  selectedClass: HeroClass | null;
+  heroName: string;
+  completed: boolean;
+  setStep: (step: number) => void;
+  setSelectedClass: (heroClass: HeroClass) => void;
+  setHeroName: (name: string) => void;
+  complete: () => void;
+}
+
+export const useOnboardingStore = create<OnboardingState>((set) => ({
+  step: 0,
+  selectedClass: null,
+  heroName: '',
+  completed: false,
+  setStep: (step) => set({ step }),
+  setSelectedClass: (selectedClass) => set({ selectedClass }),
+  setHeroName: (heroName) => set({ heroName }),
+  complete: () => set({ completed: true }),
+}));
