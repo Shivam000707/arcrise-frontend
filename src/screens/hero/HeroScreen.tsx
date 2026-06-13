@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Polygon, Line, Circle, Text as SvgText } from 'react-native-svg';
 import Animated, {
@@ -73,6 +74,7 @@ function PulsingNode({ label, value }: { label: string; value: number }) {
 export default function HeroScreen() {
   const insets           = useSafeAreaInsets();
   const { data: hero }   = useHeroQuery();
+  const reset            = useOnboardingStore((s) => s.reset);
 
   if (!hero) return <View style={styles.root} />;
 
@@ -186,6 +188,10 @@ export default function HeroScreen() {
           )}
         </View>
 
+        <TouchableOpacity onPress={reset} style={styles.resetBtn}>
+          <Text style={styles.resetText}>↩ RESTART ONBOARDING</Text>
+        </TouchableOpacity>
+
       </ScrollView>
     </View>
   );
@@ -193,6 +199,8 @@ export default function HeroScreen() {
 
 const styles = StyleSheet.create({
   root:         { flex: 1, backgroundColor: Colors.background },
+  resetBtn:     { marginTop: Spacing.xl, paddingVertical: 12, paddingHorizontal: 24, borderWidth: 1, borderColor: Colors.darkGray, borderRadius: Radius.button },
+  resetText:    { fontFamily: FontFamily.heading, color: Colors.midGray, fontSize: FontSize.xs, letterSpacing: 2 },
   content:      { padding: Spacing.md, alignItems: 'center' },
   portraitRow:  { marginTop: Spacing.md, marginBottom: Spacing.md },
   heroName: {

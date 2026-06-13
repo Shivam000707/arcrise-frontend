@@ -12,6 +12,7 @@ interface OnboardingState {
   setSelectedClass: (heroClass: HeroClass) => void;
   setHeroName: (name: string) => void;
   complete: () => void;
+  reset: () => void;
 }
 
 export const useOnboardingStore = create<OnboardingState>()(
@@ -25,6 +26,7 @@ export const useOnboardingStore = create<OnboardingState>()(
       setSelectedClass: (selectedClass) => set({ selectedClass }),
       setHeroName: (heroName) => set({ heroName }),
       complete: () => set({ completed: true }),
+      reset: () => set({ step: 0, selectedClass: null, heroName: '', completed: false }),
     }),
     {
       name: 'arcrise-onboarding',

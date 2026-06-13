@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { useEffect } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,19 +8,25 @@ import Animated, {
   withSequence,
   withDelay,
   Easing,
-} from 'react-native-reanimated';
-import Svg, { Path, Defs, RadialGradient, Stop, Ellipse } from 'react-native-svg';
-import { LinearGradient } from 'expo-linear-gradient';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { OnboardingStackParamList } from '@/navigation/types';
-import { Colors } from '@/constants/colors';
-import { FontFamily, FontSize } from '@/constants/typography';
-import GoldButton from '@/components/ui/GoldButton';
+} from "react-native-reanimated";
+import Svg, {
+  Path,
+  Defs,
+  RadialGradient,
+  Stop,
+  Ellipse,
+} from "react-native-svg";
+import { LinearGradient } from "expo-linear-gradient";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { OnboardingStackParamList } from "@/navigation/types";
+import { Colors } from "@/constants/colors";
+import { FontFamily, FontSize } from "@/constants/typography";
+import GoldButton from "@/components/ui/GoldButton";
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'Awakening'>;
+type Props = NativeStackScreenProps<OnboardingStackParamList, "Awakening">;
 
-const { width: SW, height: SH } = Dimensions.get('window');
+const { width: SW, height: SH } = Dimensions.get("window");
 
 // Silhouette: larger to match reference (~64% screen width)
 const SIL_W = SW * 0.64;
@@ -41,26 +47,42 @@ const EMBERS = Array.from({ length: 15 }, (_, i) => ({
 // ─── Ember particle ───────────────────────────────────────────────────────────
 
 interface EmberProps {
-  id: number; x: number; startY: number;
-  size: number; duration: number; delay: number; color: string;
+  id: number;
+  x: number;
+  startY: number;
+  size: number;
+  duration: number;
+  delay: number;
+  color: string;
 }
 
-function EmberParticle({ x, startY, size, duration, delay, color }: EmberProps) {
+function EmberParticle({
+  x,
+  startY,
+  size,
+  duration,
+  delay,
+  color,
+}: EmberProps) {
   const ty = useSharedValue(0);
   const op = useSharedValue(0);
 
   useEffect(() => {
     ty.value = withDelay(
       delay,
-      withRepeat(withTiming(-TRAVEL, { duration, easing: Easing.linear }), -1, false),
+      withRepeat(
+        withTiming(-TRAVEL, { duration, easing: Easing.linear }),
+        -1,
+        false,
+      ),
     );
     op.value = withDelay(
       delay,
       withRepeat(
         withSequence(
-          withTiming(0.9,  { duration: duration * 0.25 }),
-          withTiming(0.55, { duration: duration * 0.5  }),
-          withTiming(0,    { duration: duration * 0.25 }),
+          withTiming(0.9, { duration: duration * 0.25 }),
+          withTiming(0.55, { duration: duration * 0.5 }),
+          withTiming(0, { duration: duration * 0.25 }),
         ),
         -1,
         false,
@@ -76,8 +98,15 @@ function EmberParticle({ x, startY, size, duration, delay, color }: EmberProps) 
   return (
     <Animated.View
       style={[
-        { position: 'absolute', left: x, top: startY,
-          width: size, height: size, borderRadius: size / 2, backgroundColor: color },
+        {
+          position: "absolute",
+          left: x,
+          top: startY,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: color,
+        },
         style,
       ]}
     />
@@ -92,20 +121,41 @@ function HorizonLine() {
     <View pointerEvents="none" style={s.horizonWrap}>
       {/* Wide diffuse spread above the line */}
       <LinearGradient
-        colors={['transparent', 'rgba(123,92,240,0.22)', 'rgba(244,197,66,0.35)', 'rgba(123,92,240,0.22)', 'transparent']}
-        start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}
+        colors={[
+          "transparent",
+          "rgba(123,92,240,0.22)",
+          "rgba(244,197,66,0.35)",
+          "rgba(123,92,240,0.22)",
+          "transparent",
+        ]}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
         style={s.horizonSpread}
       />
       {/* The bright 1.5px line */}
       <LinearGradient
-        colors={['transparent', Colors.violet, Colors.gold, Colors.violet, 'transparent']}
-        start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}
+        colors={[
+          "transparent",
+          Colors.violet,
+          Colors.gold,
+          Colors.violet,
+          "transparent",
+        ]}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
         style={s.horizonLine}
       />
       {/* Soft bleed below */}
       <LinearGradient
-        colors={['transparent', 'rgba(123,92,240,0.12)', 'rgba(244,197,66,0.18)', 'rgba(123,92,240,0.12)', 'transparent']}
-        start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }}
+        colors={[
+          "transparent",
+          "rgba(123,92,240,0.12)",
+          "rgba(244,197,66,0.18)",
+          "rgba(123,92,240,0.12)",
+          "transparent",
+        ]}
+        start={{ x: 0, y: 0.5 }}
+        end={{ x: 1, y: 0.5 }}
         style={s.horizonBelow}
       />
     </View>
@@ -133,18 +183,18 @@ function WarriorSilhouette() {
       <Defs>
         {/* Ground glow: gold at centre, violet spreading outward at the hem */}
         <RadialGradient id="hglow" cx="50%" cy="95%" rx="78%" ry="26%">
-          <Stop offset="0%"   stopColor={Colors.gold}       stopOpacity={0.75} />
-          <Stop offset="25%"  stopColor={Colors.amber}      stopOpacity={0.55} />
-          <Stop offset="55%"  stopColor={Colors.violet}     stopOpacity={0.38} />
-          <Stop offset="80%"  stopColor={Colors.deepPurple} stopOpacity={0.18} />
-          <Stop offset="100%" stopColor={Colors.background} stopOpacity={0}    />
+          <Stop offset="0%" stopColor={Colors.gold} stopOpacity={0.75} />
+          <Stop offset="25%" stopColor={Colors.amber} stopOpacity={0.55} />
+          <Stop offset="55%" stopColor={Colors.violet} stopOpacity={0.38} />
+          <Stop offset="80%" stopColor={Colors.deepPurple} stopOpacity={0.18} />
+          <Stop offset="100%" stopColor={Colors.background} stopOpacity={0} />
         </RadialGradient>
         {/* Upper backlight halo behind the torso and hood */}
         <RadialGradient id="bglow" cx="50%" cy="54%" rx="50%" ry="34%">
-          <Stop offset="0%"   stopColor="#A07AFF"           stopOpacity={0.52} />
-          <Stop offset="40%"  stopColor="#4A22A0"           stopOpacity={0.28} />
-          <Stop offset="75%"  stopColor="#1A0533"           stopOpacity={0.12} />
-          <Stop offset="100%" stopColor={Colors.background} stopOpacity={0}    />
+          <Stop offset="0%" stopColor="#A07AFF" stopOpacity={0.52} />
+          <Stop offset="40%" stopColor="#4A22A0" stopOpacity={0.28} />
+          <Stop offset="75%" stopColor="#1A0533" stopOpacity={0.12} />
+          <Stop offset="100%" stopColor={Colors.background} stopOpacity={0} />
         </RadialGradient>
       </Defs>
 
@@ -174,21 +224,24 @@ export default function AwakeningScreen({ navigation }: Props) {
   const fadeAnim = useSharedValue(0);
 
   useEffect(() => {
-    fadeAnim.value = withTiming(1, { duration: 1400, easing: Easing.out(Easing.quad) });
+    fadeAnim.value = withTiming(1, {
+      duration: 1400,
+      easing: Easing.out(Easing.quad),
+    });
   }, []);
 
   const fadeStyle = useAnimatedStyle(() => ({ opacity: fadeAnim.value }));
 
   return (
     <View style={s.root}>
-
       {/* Embers — behind everything, no pointer events */}
       <View pointerEvents="none" style={StyleSheet.absoluteFillObject}>
-        {EMBERS.map((e) => <EmberParticle key={e.id} {...e} />)}
+        {EMBERS.map((e) => (
+          <EmberParticle key={e.id} {...e} />
+        ))}
       </View>
 
-      <Animated.View style={[StyleSheet.absoluteFillObject, fadeStyle]}>
-
+      <Animated.View style={[StyleSheet.absoluteFillObject, { height: SH }, fadeStyle]}>
         {/* ① Eyebrow */}
         <View style={[s.eyebrowRow, { top: insets.top + 20 }]}>
           <Text style={s.eyebrow}>YOUR STORY BEGINS</Text>
@@ -197,9 +250,9 @@ export default function AwakeningScreen({ navigation }: Props) {
         {/* ② Heading + italic — "LIVE AS NPCs IN" on line 2, "THEIR OWN STORY." on line 3 */}
         <View style={[s.textBlock, { top: insets.top + 64 }]}>
           <Text style={s.heading}>
-            {'MOST PEOPLE\nLIVE AS '}
+            {"MOST PEOPLE\nLIVE AS "}
             <Text style={s.headingGold}>NPCs</Text>
-            {' IN\nTHEIR OWN STORY.'}
+            {" IN\nTHEIR OWN STORY."}
           </Text>
           <Text style={s.subtext}>But you opened this app.</Text>
         </View>
@@ -213,15 +266,21 @@ export default function AwakeningScreen({ navigation }: Props) {
         <HorizonLine />
 
         {/* ⑤ CTA + disclaimer */}
-        <View style={[s.bottomWrap, { paddingBottom: insets.bottom + 20 }]}>
+        <View
+          style={[
+            s.bottomWrap,
+            { paddingBottom: insets.bottom + 20 },
+          ]}
+        >
           <GoldButton
             label="BEGIN YOUR ARC  →"
-            onPress={() => navigation.navigate('ClassSelect')}
+            onPress={() => navigation.navigate("ClassSelect")}
             style={s.ctaStretch}
           />
-          <Text style={s.disclaimer}>No account needed. Just your ambition.</Text>
+          <Text style={s.disclaimer}>
+            No account needed. Just your ambition.
+          </Text>
         </View>
-
       </Animated.View>
     </View>
   );
@@ -237,10 +296,10 @@ const s = StyleSheet.create({
 
   // ① eyebrow
   eyebrowRow: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
-    alignItems: 'center',
+    alignItems: "center",
   },
   eyebrow: {
     fontFamily: FontFamily.heading,
@@ -251,16 +310,16 @@ const s = StyleSheet.create({
 
   // ② heading
   textBlock: {
-    position: 'absolute',
+    position: "absolute",
     left: 24,
     right: 24,
-    alignItems: 'center',
+    alignItems: "center",
   },
   heading: {
     fontFamily: FontFamily.headingBold,
-    fontSize: 30,                 // up from 28 — matches reference scale
+    fontSize: 30, // up from 28 — matches reference scale
     color: Colors.white,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 42,
     letterSpacing: 0.5,
   },
@@ -269,59 +328,59 @@ const s = StyleSheet.create({
     fontFamily: FontFamily.headingBold,
   },
   subtext: {
-    fontStyle: 'italic',
+    fontStyle: "italic",
     color: Colors.violet,
     fontSize: FontSize.base,
     marginTop: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
 
   // ③ silhouette — pulled up (bottom: '28%') so figure sits closer to the text
   silhouetteWrap: {
-    position: 'absolute',
-    bottom: '28%',
+    position: "absolute",
+    bottom: "28%",
     left: 0,
     right: 0,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   // ④ horizon line — positioned at the figure's hem level
   // hem is ~92% from SVG top → SVG bottom + 8% of SIL_H above silhouette bottom
   horizonWrap: {
-    position: 'absolute',
-    bottom: '30%',                // just above silhouette bottom, at cloak hem
+    position: "absolute",
+    bottom: "30%", // just above silhouette bottom, at cloak hem
     left: 0,
     right: 0,
   },
   horizonSpread: {
     height: 22,
-    width: '100%',
+    width: "100%",
   },
   horizonLine: {
     height: 1.5,
-    width: '100%',
+    width: "100%",
   },
   horizonBelow: {
     height: 12,
-    width: '100%',
+    width: "100%",
   },
 
   // ⑤ bottom CTA
   bottomWrap: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: 24,
   },
   ctaStretch: {
-    width: '100%',
+    width: "100%",
   },
   disclaimer: {
     color: Colors.midGray,
     fontSize: 11,
     marginTop: 10,
-    textAlign: 'center',
+    textAlign: "center",
     opacity: 0.65,
   },
 });
