@@ -26,7 +26,6 @@ import { Colors } from '@/constants/colors';
 import { FontFamily, FontSize } from '@/constants/typography';
 import { Radius, Spacing } from '@/constants/layout';
 import HeroPortrait from '@/components/hero/HeroPortrait';
-import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useHeroQuery } from '@/services/api/useHero';
 import { levelToStage } from '@/utils/levelUtils';
 
@@ -120,7 +119,6 @@ function StatRow({
 
 export default function LevelUpScreen({ navigation, route }: Props) {
   const insets  = useSafeAreaInsets();
-  const heroName = useOnboardingStore((s) => s.heroName);
   const { data: hero } = useHeroQuery();
 
   const {

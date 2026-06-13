@@ -4,7 +4,7 @@ import { useHeroQuery } from '@/services/api/useHero';
 import { useQuestsQuery } from '@/services/api/useQuests';
 import { usePartyQuery } from '@/services/api/useParty';
 import { heroStateFromStats } from '@/utils/heroVisuals';
-import { levelToStage, xpForNextLevel } from '@/utils/levelUtils';
+import { levelToStage, xpProgressInLevel } from '@/utils/levelUtils';
 import { generateJournalEntry } from '@/services/journal/generateJournalEntry';
 import { HERO_CLASSES } from '@/constants/classes';
 import HeroPortrait from '@/components/hero/HeroPortrait';
@@ -93,13 +93,12 @@ export default function WarRoomScreen() {
   // ── Derived values — all from query data, zero hardcoding ──
   const heroState   = heroStateFromStats(hero.stats, hero.lastActivityAt);
   const stage       = levelToStage(hero.level);
-  const xpNeeded    = xpForNextLevel(hero.level);
-  const xpProgress  = xpNeeded > 0 ? Math.min(hero.xp / xpNeeded, 1) : 0;
+  const { current: xpCurrent, needed: xpNeeded } = xpProgressInLevel(hero.xp);
+  const xpProgress  = xpNeeded > 0 ? Math.min(xpCurrent / xpNeeded, 1) : 0;
   const focusPercent = hero.stats.focus / 100;
   const classDef    = HERO_CLASSES.find((c) => c.id === hero.heroClass);
   const className   = classDef?.name.toUpperCase() ?? hero.heroClass.toUpperCase();
-  // 'streak' is the closest EntryType to a "daily status" line
-  const statusLine  = generateJournalEntry({ type: 'streak' }, hero);
+  const statusLine  = generateJournalEntry({ type: 'daily_status' }, hero);
 
   const hpPercent   = party ? party.boss.currentHp / party.boss.maxHp : 0;
   const countdown   = party ? getBossCountdown(party.boss.endsAt) : '—';
@@ -137,7 +136,7 @@ export default function WarRoomScreen() {
               <View style={s.xpTrack}>
                 <View style={[s.xpFill, { width: `${xpProgress * 100}%` }]} />
               </View>
-              <Text style={s.xpLabel}>{hero.xp} / {xpNeeded} XP</Text>
+              <Text style={s.xpLabel}>{xpCurrent} / {xpNeeded} XP</Text>
             </View>
           </View>
 

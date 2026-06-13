@@ -23,7 +23,6 @@ import { Colors } from '@/constants/colors';
 import { FontFamily, FontSize } from '@/constants/typography';
 import { Radius, Spacing } from '@/constants/layout';
 import HeroPortrait from '@/components/hero/HeroPortrait';
-import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useAppStore } from '@/store/useAppStore';
 import { useSessionStore } from '@/store/useSessionStore';
 import { useHeroQuery, useUpdateHeroMutation } from '@/services/api/useHero';
@@ -46,7 +45,6 @@ function formatFocusTime(seconds: number): string {
 export default function MirrorCorruptedScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const appName = route.params?.appName ?? 'this app';
-  const heroName = useOnboardingStore((s) => s.heroName);
   const setMirrorActive = useAppStore((s) => s.setMirrorActive);
   const session = useSessionStore();
   const { data: hero } = useHeroQuery();
@@ -86,6 +84,10 @@ export default function MirrorCorruptedScreen({ navigation, route }: Props) {
 
   const handleContinue = async () => {
     if (hero) {
+      const day = Math.max(
+        1,
+        Math.floor((Date.now() - new Date(hero.createdAt).getTime()) / 86400000) + 1,
+      );
       await updateHero.mutateAsync({
         xp: Math.max(0, hero.xp - DOOMSCROLL_XP_COST),
         stats: {
@@ -96,7 +98,7 @@ export default function MirrorCorruptedScreen({ navigation, route }: Props) {
         },
       });
       await addEntry.mutateAsync({
-        day: 1,
+        day,
         type: 'doomscroll',
         prose: generateJournalEntry({ type: 'doomscroll' }, hero),
         isMilestone: false,
@@ -107,7 +109,7 @@ export default function MirrorCorruptedScreen({ navigation, route }: Props) {
     navigation.goBack();
   };
 
-  const displayName = heroName || hero?.name || 'The Hero';
+  const displayName = hero?.name || 'The Hero';
   const focusStat = hero?.stats.focus ?? 0;
 
   return (

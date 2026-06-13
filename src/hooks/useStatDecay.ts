@@ -44,11 +44,13 @@ export function useStatDecay(): void {
   // Keep refs current so the stable useEffect closure always reads latest values.
   const heroRef                    = useRef(hero);
   const lastDecayCheckRef          = useRef(lastDecayCheck);
+  const lastBlacklistCheckRef      = useRef(lastBlacklistCheck);
   const doomscrollDetectedTodayRef = useRef(doomscrollDetectedToday);
   const updateHeroRef              = useRef(updateHero);
   const addEntryRef                = useRef(addEntry);
   heroRef.current                    = hero;
   lastDecayCheckRef.current          = lastDecayCheck;
+  lastBlacklistCheckRef.current      = lastBlacklistCheck;
   doomscrollDetectedTodayRef.current = doomscrollDetectedToday;
   updateHeroRef.current              = updateHero;
   addEntryRef.current                = addEntry;
@@ -62,8 +64,8 @@ export function useStatDecay(): void {
         // ── Blacklist check ────────────────────────────────────────────────
         const permissionGranted = await requestUsagePermissionIfNeeded();
         if (permissionGranted || __DEV__) {
-          const sinceMs = lastBlacklistCheck
-            ? new Date(lastBlacklistCheck).getTime()
+          const sinceMs = lastBlacklistCheckRef.current
+            ? new Date(lastBlacklistCheckRef.current).getTime()
             : Date.now() - 60 * 60 * 1000;
 
           const result = await checkBlacklistUsage(sinceMs);

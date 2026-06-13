@@ -5,10 +5,10 @@ export const MOCK_PARTY: Party = {
   name: 'The Forge',
   healthPercent: 82,
   members: [
-    { id: 'm-1', heroName: 'The Scholar', heroClass: 'scholar', role: 'vanguard', dailyFocusXp: 120, focusStat: 74 },
-    { id: 'm-2', heroName: 'Priya',       heroClass: 'warrior', role: 'guardian', dailyFocusXp: 80,  focusStat: 68 },
-    { id: 'm-3', heroName: 'Rohan',       heroClass: 'builder', role: 'rogue',    dailyFocusXp: 40,  focusStat: 55 },
-    { id: 'm-4', heroName: 'Kavya',       heroClass: 'creator', role: 'rogue',    dailyFocusXp: 0,   focusStat: 51 },
+    { id: 'm-1', heroName: 'Arjun',  heroClass: 'builder', role: 'vanguard', dailyFocusXp: 120, focusStat: 74 },
+    { id: 'm-2', heroName: 'Priya',  heroClass: 'warrior', role: 'guardian', dailyFocusXp: 80,  focusStat: 68 },
+    { id: 'm-3', heroName: 'Rohan',  heroClass: 'builder', role: 'rogue',    dailyFocusXp: 40,  focusStat: 55 },
+    { id: 'm-4', heroName: 'Kavya',  heroClass: 'creator', role: 'rogue',    dailyFocusXp: 0,   focusStat: 51 },
   ],
   boss: {
     name: 'The Distraction Wraith',

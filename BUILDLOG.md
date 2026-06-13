@@ -1,6 +1,6 @@
 # ArcRise — Build Log
 
-**Status:** In Progress
+**Status:** MVP DEMO READY ✓
 
 ---
 
@@ -242,12 +242,48 @@
 
 ---
 
+### Step 15 — Navigation QA + Polish Pass
+
+- `levelUtils.ts` — implemented `xpToLevel` and `xpProgressInLevel` (were stubs; hero was permanently Level 1)
+- `WarRoomScreen` — XP bar now uses `xpProgressInLevel` (within-level progress); status line type corrected `streak` → `daily_status`
+- `FocusScreen` — completion now calls `updateHero` to award XP + FOCUS stat gain; journal entry passes real `duration`; surrender uses `XP_REWARDS.surrenderPenalty` constant and correct `focus` journal type; `day` computed from `hero.createdAt` everywhere
+- `MirrorScreen` / `MirrorCorruptedScreen` — `day: 1` hardcode fixed; `useOnboardingStore` heroName removed, uses `hero?.name`
+- `LevelUpScreen` / `JournalScreen` — same heroName fix; removed stale `useOnboardingStore` imports
+- `useAppStore` — `setLastDecayCheck` now resets `doomscrollDetectedToday` at day boundary; added `resetDoomscrollFlag`; added `persist` middleware (AsyncStorage) for `lastBlacklistCheck`, `lastDecayCheck`, `doomscrollDetectedToday`
+- `useOnboardingStore` — added `persist` middleware (AsyncStorage); onboarding no longer replays on cold start
+- `useStatDecay` — fixed stale closure: `lastBlacklistCheck` now read through `lastBlacklistCheckRef` like all other values
+- `mockUpdateHero` — now mutates `MOCK_HERO` in-place; XP/stat changes persist within the session
+- `types/party.ts` — `heroClass: string` → `heroClass: HeroClass` (union type safety)
+- Build: 3.7MB bundle, zero errors
+
+### Step 16 — Mock Data Polish
+
+- `hero.mock.ts` — Arjun · Builder · Level 12 · 847 XP · FOCUS 74, PHYSIQUE 61, CRAFT 68, WISDOM 55, DISCIPLINE 70, AURA 48; `createdAt` 18 days ago; `lastActivityAt` 1h ago (AURA approaching decay threshold for demo)
+- `quests.mock.ts` — Iron Trial progress 2/4 to show partial weekly progress in demo
+- `party.mock.ts` — hero name updated to Arjun (Vanguard)
+- `journal.mock.ts` — 8 pre-written RPG prose entries across 18 days: Day 1 (milestone/start), Day 3 (focus session), Day 7 (quest milestone), Day 11 (doomscroll slip), Day 14 (14-day streak milestone), Day 16 (stat decay), Day 17 (daily status), Day 18 (today's focus complete); `mockAddEntry` now uses `unshift` so new entries appear at top
+- Build: zero errors
+
+### Step 17 — Demo Build
+
+- `npx expo export --platform android --no-minify` — 3.7MB bundle, zero TypeScript errors, zero warnings
+- `DEMO_SCRIPT.md` created — 9-screen walkthrough with what to tap, what to say, what to highlight, known limitations to mention proactively
+- `KNOWN_ISSUES.md` created — 3 HIGH, 5 MEDIUM, 7 LOW items; all non-blocking for demo
+- BUILDLOG status updated to **MVP DEMO READY**
+
+**APK build command:**
+```bash
+eas build --profile preview --platform android
+```
+
 ## Up Next
 
-- Step 15 — Full navigation flow QA + polish pass
-- Step 16 — Mock data polish
-- Step 17 — Demo build
-- Step 13 — Full navigation flow QA
+Post-MVP (see workflow.md Step 18+):
+- Step 18 — FastAPI backend (swap mock base URL)
+- Step 19 — Real Android native module (UsageStats bridge)
+- Step 20 — LLM journal entries (swap `generateJournalEntry` body)
+- Step 21 — Push notifications
+- Step 22 — Play Store submission
 
 ---
 

@@ -27,7 +27,6 @@ import { Radius, Spacing } from '@/constants/layout';
 import ProgressRing from '@/components/ui/ProgressRing';
 import HeroPortrait from '@/components/hero/HeroPortrait';
 import { useSessionStore } from '@/store/useSessionStore';
-import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { useHeroQuery, useUpdateHeroMutation } from '@/services/api/useHero';
 import { useQuestsQuery } from '@/services/api/useQuests';
 import { useAddEntryMutation } from '@/services/api/useJournal';
@@ -35,6 +34,7 @@ import { useCountdownTimer } from '@/hooks/useCountdownTimer';
 import { heroStateFromStats } from '@/utils/heroVisuals';
 import { levelToStage } from '@/utils/levelUtils';
 import { generateJournalEntry } from '@/services/journal/generateJournalEntry';
+import { XP_REWARDS } from '@/constants/xp';
 
 type Props = NativeStackScreenProps<ModalStackParamList, 'Focus'>;
 
@@ -53,7 +53,6 @@ function formatTime(seconds: number): string {
 
 export default function FocusScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
-  const heroName = useOnboardingStore((s) => s.heroName);
   const session = useSessionStore();
   const { data: hero } = useHeroQuery();
   const { data: quests } = useQuestsQuery();
@@ -100,12 +99,28 @@ export default function FocusScreen({ navigation }: Props) {
         withTiming(0.85, { duration: 300 }),
         withDelay(2000, withTiming(0, { duration: 400 })),
       );
-      setTimeout(() => {
+      setTimeout(async () => {
         if (hero) {
+          const focusGain = Math.min(5, Math.round(timer.elapsed / 60 / 18));
+          const day = Math.max(
+            1,
+            Math.floor((Date.now() - new Date(hero.createdAt).getTime()) / 86400000) + 1,
+          );
+          await updateHero.mutateAsync({
+            xp: hero.xp + xpEarned,
+            stats: {
+              ...hero.stats,
+              focus: Math.min(100, hero.stats.focus + focusGain),
+            },
+            lastActivityAt: new Date().toISOString(),
+          });
           addEntry.mutate({
-            day: 1,
+            day,
             type: 'focus',
-            prose: generateJournalEntry({ type: 'focus' }, hero),
+            prose: generateJournalEntry(
+              { type: 'focus', detail: { duration: Math.floor(timer.elapsed / 60) } },
+              hero,
+            ),
             isMilestone: false,
             createdAt: new Date().toISOString(),
           });
@@ -124,11 +139,15 @@ export default function FocusScreen({ navigation }: Props) {
   const handleSurrender = async () => {
     setSurrenderVisible(false);
     if (hero) {
-      await updateHero.mutateAsync({ xp: Math.max(0, hero.xp - 30) });
+      const day = Math.max(
+        1,
+        Math.floor((Date.now() - new Date(hero.createdAt).getTime()) / 86400000) + 1,
+      );
+      await updateHero.mutateAsync({ xp: Math.max(0, hero.xp + XP_REWARDS.surrenderPenalty) });
       await addEntry.mutateAsync({
-        day: 1,
-        type: 'doomscroll',
-        prose: `${heroName || hero.name} faced the trial and chose to withdraw. The chronicle notes the cost: 30 XP and the weight of an unfinished arc.`,
+        day,
+        type: 'focus',
+        prose: `${hero.name} faced the trial and chose to withdraw. The chronicle notes the cost: ${Math.abs(XP_REWARDS.surrenderPenalty)} XP and the weight of an unfinished arc.`,
         isMilestone: false,
         createdAt: new Date().toISOString(),
       });
@@ -140,7 +159,7 @@ export default function FocusScreen({ navigation }: Props) {
   const questName = quests?.[0]?.title ?? 'Focus Session';
   const heroState = hero ? heroStateFromStats(hero.stats, hero.lastActivityAt) : 'thriving';
   const stage = hero ? levelToStage(hero.level) : 1;
-  const displayName = heroName || hero?.name || 'The Hero';
+  const displayName = hero?.name || 'The Hero';
 
   return (
     <View style={s.container}>

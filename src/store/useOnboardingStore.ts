@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeroClass } from '@/types/hero';
 
 interface OnboardingState {
@@ -12,13 +14,21 @@ interface OnboardingState {
   complete: () => void;
 }
 
-export const useOnboardingStore = create<OnboardingState>((set) => ({
-  step: 0,
-  selectedClass: null,
-  heroName: '',
-  completed: false,
-  setStep: (step) => set({ step }),
-  setSelectedClass: (selectedClass) => set({ selectedClass }),
-  setHeroName: (heroName) => set({ heroName }),
-  complete: () => set({ completed: true }),
-}));
+export const useOnboardingStore = create<OnboardingState>()(
+  persist(
+    (set) => ({
+      step: 0,
+      selectedClass: null,
+      heroName: '',
+      completed: false,
+      setStep: (step) => set({ step }),
+      setSelectedClass: (selectedClass) => set({ selectedClass }),
+      setHeroName: (heroName) => set({ heroName }),
+      complete: () => set({ completed: true }),
+    }),
+    {
+      name: 'arcrise-onboarding',
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);

@@ -2,8 +2,12 @@ import { LEVEL_THRESHOLDS, PORTRAIT_STAGE_BRACKETS } from '@/constants/xp';
 import { PortraitStage } from '@/types/hero';
 
 export function xpToLevel(totalXp: number): number {
-  // stub
-  return 1;
+  let accumulated = 0;
+  for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
+    accumulated += LEVEL_THRESHOLDS[i];
+    if (totalXp < accumulated) return i + 1;
+  }
+  return LEVEL_THRESHOLDS.length + 1;
 }
 
 export function xpForNextLevel(level: number): number {
@@ -11,8 +15,15 @@ export function xpForNextLevel(level: number): number {
 }
 
 export function xpProgressInLevel(totalXp: number): { current: number; needed: number } {
-  // stub
-  return { current: 0, needed: 200 };
+  let accumulated = 0;
+  for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
+    const threshold = LEVEL_THRESHOLDS[i];
+    if (totalXp < accumulated + threshold) {
+      return { current: totalXp - accumulated, needed: threshold };
+    }
+    accumulated += threshold;
+  }
+  return { current: 0, needed: 9999 };
 }
 
 export function levelToStage(level: number): PortraitStage {

@@ -30,7 +30,6 @@ import { FontFamily, FontSize } from '@/constants/typography';
 import { Radius, Spacing } from '@/constants/layout';
 import { useJournalQuery } from '@/services/api/useJournal';
 import { useHeroQuery } from '@/services/api/useHero';
-import { useOnboardingStore } from '@/store/useOnboardingStore';
 import { JournalEntry } from '@/types/journal';
 import { HERO_CLASSES } from '@/constants/classes';
 
@@ -86,14 +85,13 @@ function EntryRow({ entry, isFirst }: { entry: JournalEntry; isFirst: boolean })
 export default function JournalScreen() {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
-  const heroName = useOnboardingStore((s) => s.heroName);
 
   const { data: entries, isLoading } = useJournalQuery();
   const { data: hero } = useHeroQuery();
 
   const classDef = hero ? HERO_CLASSES.find((c) => c.id === hero.heroClass) : null;
   const className = classDef?.name.toUpperCase() ?? '';
-  const displayName = heroName || hero?.name || 'The Hero';
+  const displayName = hero?.name || 'The Hero';
 
   // Blinking cursor animation
   const cursorOpacity = useSharedValue(1);

@@ -1,9 +1,11 @@
+import { HeroClass } from '@/types/hero';
+
 export type PartyRole = 'vanguard' | 'guardian' | 'rogue';
 
 export interface PartyMember {
   id: string;
   heroName: string;
-  heroClass: string;
+  heroClass: HeroClass;
   role: PartyRole;
   dailyFocusXp: number;
   focusStat: number;
