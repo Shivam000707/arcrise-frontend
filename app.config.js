@@ -18,5 +18,10 @@ module.exports = {
       ...base.android,
       package: PKG_NAME,
     },
+    extra: {
+      eas: {
+        projectId: '7fb46b1f-0b07-41c8-b637-d8f256ac8205',
+      },
+    },
   },
 };
