@@ -53,10 +53,10 @@ function ParchmentTexture() {
 function EntryDivider() {
   return (
     <View style={s.dividerWrap} pointerEvents="none">
-      <Svg width="100%" height={20}>
-        <Line x1="0" y1="10" x2="42%" y2="10" stroke="rgba(244,197,66,0.28)" strokeWidth={0.6} />
-        <Path d="M50% 4 L53% 10 L50% 16 L47% 10 Z" fill="rgba(244,197,66,0.5)" />
-        <Line x1="58%" y1="10" x2="100%" y2="10" stroke="rgba(244,197,66,0.28)" strokeWidth={0.6} />
+      <Svg width="100%" height={20} viewBox="0 0 100 20">
+        <Line x1="0" y1="10" x2="42" y2="10" stroke="rgba(244,197,66,0.28)" strokeWidth={0.6} />
+        <Path d="M50 4 L53 10 L50 16 L47 10 Z" fill="rgba(244,197,66,0.5)" />
+        <Line x1="58" y1="10" x2="100" y2="10" stroke="rgba(244,197,66,0.28)" strokeWidth={0.6} />
       </Svg>
     </View>
   );
